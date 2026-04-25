@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Free Code UI</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0b0d;
+    --bg2: #111318;
+    --bg3: #181b22;
+    --bg4: #1e222c;
+    --border: #252a36;
+    --border2: #2e3445;
+    --text: #e4e8f0;
+    --text2: #8892a4;
+    --text3: #5a6378;
+    --accent: #4f8ef7;
+    --accent2: #7c5af7;
+    --green: #3dd68c;
+    --yellow: #f0c040;
+    --red: #f05a5a;
+    --orange: #f07a30;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Space Grotesk', sans-serif;
+    --radius: 8px;
+    --radius2: 12px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── GRID NOISE BACKGROUND ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,11,13,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .logo-icon {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+
+  .header-sep { flex: 1; }
+
+  .status-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text2);
+    font-family: var(--mono);
+    transition: all 0.3s;
+  }
+
+  .status-chip.connected {
+    border-color: rgba(61,214,140,0.3);
+    background: rgba(61,214,140,0.06);
+    color: var(--green);
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text3);
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .status-chip.connected .status-dot {
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .btn-sm {
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .btn-sm:hover { background: var(--bg4); color: var(--text); border-color: var(--accent); }
+
+  /* ─── LAYOUT ─── */
+  .layout {
+    display: flex;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 200px;
+    border-right: 1px solid var(--border);
+    background: rgba(17,19,24,0.6);
+    padding: 20px 0;
+    flex-shrink: 0;
+  }
+
+  .nav-label {
+    padding: 0 16px 8px;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    cursor: pointer;
+    color: var(--text2);
+    font-size: 13px;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    user-select: none;
+  }
+
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+
+  .nav-item.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(79,142,247,0.08);
+  }
+
+  .nav-icon { font-size: 14px; width: 18px; text-align: center; }
+
+  .nav-divider {
+    margin: 12px 0;
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ─── MAIN ─── */
+  .main {
+    flex: 1;
+    padding: 28px 32px;
+    overflow-y: auto;
+    max-width: 900px;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ─── CONNECT PANEL ─── */
+  .connect-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    margin-bottom: 28px;
+  }
+
+  .connect-bar input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .connect-bar input:focus { border-color: var(--accent); }
+  .connect-bar input::placeholder { color: var(--text3); }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    border: 1px solid;
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #3d7ce0; border-color: #3d7ce0; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-ghost {
+    background: transparent;
+    border-color: var(--border2);
+    color: var(--text2);
+  }
+  .btn-ghost:hover { background: var(--bg3); color: var(--text); border-color: var(--border2); }
+
+  .btn-danger {
+    background: transparent;
+    border-color: rgba(240,90,90,0.4);
+    color: var(--red);
+  }
+  .btn-danger:hover { background: rgba(240,90,90,0.1); }
+
+  /* ─── SECTION HEADER ─── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .section-sub {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: var(--mono);
+  }
+
+  /* ─── PROVIDER CARDS ─── */
+  .providers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .provider-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 20px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .provider-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--provider-color, var(--accent)), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .provider-card:hover::before { opacity: 1; }
+  .provider-card:hover { border-color: var(--border2); }
+
+  .provider-card.authed {
+    border-color: rgba(61,214,140,0.25);
+    background: linear-gradient(135deg, var(--bg2), rgba(61,214,140,0.03));
+  }
+
+  .provider-card.authing { border-color: rgba(79,142,247,0.3); }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .provider-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+
+  .provider-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.2px;
+  }
+
+  .provider-desc {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    margin-top: 2px;
+  }
+
+  .card-status {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+  }
+
+  .card-status.ok { color: var(--green); }
+  .card-status.pending { color: var(--yellow); }
+
+  .card-status-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .card-status.ok .card-status-dot { animation: pulse 2s infinite; }
+
+  .card-actions { display: flex; gap: 8px; }
+
+  .btn-login {
+    flex: 1;
+    padding: 8px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-login:hover {
+    background: var(--bg4);
+    border-color: var(--provider-color, var(--accent));
+    color: var(--provider-color, var(--accent));
+  }
+
+  .btn-login.loading {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .btn-logout {
+    padding: 8px 10px;
+    border-radius: var(--radius);
+    border: 1px solid rgba(240,90,90,0.3);
+    background: transparent;
+    color: var(--text3);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover { color: var(--red); border-color: var(--red); background: rgba(240,90,90,0.06); }
+
+  /* ─── AUTH FLOW PANEL (shows below card when logging in) ─── */
+  .auth-flow {
+    display: none;
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    animation: slideDown 0.2s ease;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .auth-flow.open { display: block; }
+
+  .auth-url-label {
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .auth-url-box {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    word-break: break-all;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .auth-url-box:hover { border-color: var(--accent); }
+
+  .auth-url-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .auth-sep {
+    font-size: 10px;
+    color: var(--text3);
+    font-family: var(--mono);
+    text-align: center;
+    margin: 10px 0 8px;
+    position: relative;
+  }
+
+  .auth-sep::before, .auth-sep::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: var(--border);
+  }
+  .auth-sep::before { left: 0; }
+  .auth-sep::after { right: 0; }
+
+  .callback-label {
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .callback-help {
+    font-size: 10px;
+    color: var(--text3);
+    font-family: var(--mono);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .callback-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .callback-input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 7px 10px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .callback-input:focus { border-color: var(--accent); }
+  .callback-input::placeholder { color: var(--text3); }
+
+  .auth-status {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text3);
+  }
+
+  .spinner {
+    width: 10px; height: 10px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── QUOTA PAGE ─── */
+  .quota-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .quota-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 18px;
+  }
+
+  .quota-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .quota-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: var(--mono);
+    letter-spacing: -1px;
+    margin-bottom: 4px;
+  }
+
+  .quota-sub {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+  }
+
+  .quota-bar-wrap {
+    height: 3px;
+    background: var(--border);
+    border-radius: 10px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+
+  .quota-bar {
+    height: 100%;
+    border-radius: 10px;
+    background: var(--accent);
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ─── TOAST ─── */
+  .toast-area {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .toast {
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    max-width: 320px;
+    box-shadow: var(--shadow);
+    animation: toastIn 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .toast.success { border-color: rgba(61,214,140,0.4); }
+  .toast.error { border-color: rgba(240,90,90,0.4); }
+  .toast.info { border-color: rgba(79,142,247,0.4); }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ─── TABLE ─── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+
+  .data-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--text2);
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-family: var(--mono);
+    letter-spacing: 0.3px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text3);
+  }
+
+  .tag.green { background: rgba(61,214,140,0.1); border-color: rgba(61,214,140,0.3); color: var(--green); }
+  .tag.blue { background: rgba(79,142,247,0.1); border-color: rgba(79,142,247,0.3); color: var(--accent); }
+  .tag.yellow { background: rgba(240,192,64,0.1); border-color: rgba(240,192,64,0.3); color: var(--yellow); }
+  .tag.red { background: rgba(240,90,90,0.1); border-color: rgba(240,90,90,0.3); color: var(--red); }
+
+  /* ─── SETTINGS PAGE ─── */
+  .settings-group {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .settings-group-title {
+    padding: 14px 18px;
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--text2);
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  .settings-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .settings-row:last-child { border-bottom: none; }
+
+  .settings-key {
+    font-size: 12px;
+    color: var(--text2);
+    font-family: var(--mono);
+    width: 160px;
+    flex-shrink: 0;
+  }
+
+  .settings-val {
+    flex: 1;
+    font-size: 12px;
+    color: var(--text);
+    font-family: var(--mono);
+  }
+
+  .settings-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 7px 10px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .settings-input:focus { border-color: var(--accent); }
+
+  /* toggle */
+  .toggle {
+    width: 36px; height: 20px;
+    background: var(--border2);
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .toggle.on { background: var(--accent); }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+
+  .toggle.on::after { transform: translateX(16px); }
+
+  /* empty state */
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text3);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .empty-icon { font-size: 32px; margin-bottom: 12px; }
+  .empty-text { color: var(--text2); margin-bottom: 6px; }
+
+  /* ─── COPY FLASH ─── */
+  @keyframes flashCopy {
+    0% { background: rgba(79,142,247,0.2); }
+    100% { background: var(--bg3); }
+  }
+
+  .copied { animation: flashCopy 0.5s ease; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    free-code-ui
+  </div>
+  <span style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-left:4px;">/ CLIProxyAPI</span>
+  <div class="header-sep"></div>
+  <div class="status-chip" id="globalStatus">
+    <div class="status-dot"></div>
+    <span id="statusText">disconnected</span>
+  </div>
+  <button class="btn-sm" onclick="showPage('settings')">⚙ Settings</button>
+</header>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="nav-label">Menu</div>
+    <div class="nav-item active" onclick="showPage('oauth')" id="nav-oauth">
+      <span class="nav-icon">🔐</span> OAuth Login
+    </div>
+    <div class="nav-item" onclick="showPage('quota')" id="nav-quota">
+      <span class="nav-icon">📊</span> Quota
+    </div>
+    <div class="nav-item" onclick="showPage('auth-files')" id="nav-auth-files">
+      <span class="nav-icon">📁</span> Auth Files
+    </div>
+    <hr class="nav-divider"/>
+    <div class="nav-item" onclick="showPage('settings')" id="nav-settings">
+      <span class="nav-icon">⚙</span> Settings
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- ─── OAUTH LOGIN PAGE ─── -->
+    <div class="page active" id="page-oauth">
+      <!-- Connect bar -->
+      <div class="connect-bar">
+        <input id="hostInput" type="text" placeholder="http://localhost:8317" value="http://localhost:8317"/>
+        <input id="keyInput" type="password" placeholder="Management key…" style="max-width:220px;"/>
+        <button class="btn btn-primary" id="connectBtn" onclick="connectBackend()">Connect</button>
+        <button class="btn btn-ghost" id="disconnectBtn" onclick="disconnectBackend()" style="display:none">Disconnect</button>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">OAuth Providers</div>
+        <div class="section-sub">click Login to open the auth link in your browser</div>
+      </div>
+
+      <div class="providers-grid" id="providerGrid">
+        <!-- injected by JS -->
+      </div>
+    </div>
+
+    <!-- ─── QUOTA PAGE ─── -->
+    <div class="page" id="page-quota">
+      <div class="section-header">
+        <div class="section-title">Quota &amp; Usage</div>
+        <button class="btn btn-ghost" style="margin-left:auto;font-size:11px;" onclick="loadQuota()">↻ Refresh</button>
+      </div>
+      <div class="quota-grid" id="quotaGrid">
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-icon">📡</div>
+          <div class="empty-text">Connect to backend first</div>
+        </div>
+      </div>
+
+      <div class="section-header" style="margin-top:8px;">
+        <div class="section-title">Recent Requests</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);overflow:hidden;">
+        <table class="data-table" id="usageTable">
+          <thead>
+            <tr>
+              <th>Provider</th>
+              <th>Model</th>
+              <th>Tokens (in/out)</th>
+              <th>Status</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="usageTbody">
+            <tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px;">No data — connect and refresh</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── AUTH FILES PAGE ─── -->
+    <div class="page" id="page-auth-files">
+      <div class="section-header">
+        <div class="section-title">Auth Files</div>
+        <button class="btn btn-ghost" style="margin-left:auto;font-size:11px;" onclick="loadAuthFiles()">↻ Refresh</button>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);overflow:hidden;">
+        <table class="data-table" id="authTable">
+          <thead>
+            <tr>
+              <th>Filename</th>
+              <th>Provider</th>
+              <th>Expires</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="authTbody">
+            <tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px;">No auth files — connect and refresh</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── SETTINGS PAGE ─── -->
+    <div class="page" id="page-settings">
+      <div class="section-header">
+        <div class="section-title">Settings</div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">Connection</div>
+        <div class="settings-row">
+          <div class="settings-key">Backend URL</div>
+          <input class="settings-input" id="s-host" placeholder="http://localhost:8317"/>
+        </div>
+        <div class="settings-row">
+          <div class="settings-key">Management Key</div>
+          <input class="settings-input" type="password" id="s-key" placeholder="••••••••"/>
+        </div>
+        <div class="settings-row">
+          <div class="settings-key"></div>
+          <button class="btn btn-primary" onclick="saveSettings()">Save & Connect</button>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">Behaviour</div>
+        <div class="settings-row">
+          <div class="settings-key">Auto-open link</div>
+          <div class="settings-val" style="color:var(--text3);font-size:11px;">Opens the OAuth URL in a new tab automatically</div>
+          <div class="toggle on" id="toggle-autoopen" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-key">Poll status</div>
+          <div class="settings-val" style="color:var(--text3);font-size:11px;">Poll backend every 3 s for auth completion</div>
+          <div class="toggle on" id="toggle-poll" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-key">Remote browser mode</div>
+          <div class="settings-val" style="color:var(--text3);font-size:11px;">Show callback URL input (when browser is remote)</div>
+          <div class="toggle" id="toggle-remote" onclick="this.classList.toggle('on');renderProviders()"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Toast container -->
+<div class="toast-area" id="toastArea"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let state = {
+  host: localStorage.getItem('fcu_host') || 'http://localhost:8317',
+  key:  localStorage.getItem('fcu_key')  || '',
+  connected: false,
+  authStates: {}, // providerKey -> { url, polling, done, error }
+};
+
+const PROVIDERS = [
+  {
+    key: 'anthropic',
+    name: 'Anthropic / Claude',
+    desc: 'Claude Pro · Max',
+    icon: '✳',
+    color: '#cc7a3e',
+    bg: 'rgba(204,122,62,0.12)',
+    endpoint: 'anthropic-auth-url',
+    callbackEndpoint: 'anthropic-auth-callback',
+    callbackPort: 54545,
+  },
+  {
+    key: 'gemini',
+    name: 'Gemini CLI',
+    desc: 'Google AI · Gemini 2.5 Pro',
+    icon: '✦',
+    color: '#4f8ef7',
+    bg: 'rgba(79,142,247,0.12)',
+    endpoint: 'gemini-cli-auth-url',
+    callbackEndpoint: 'gemini-cli-auth-callback',
+    callbackPort: 8085,
+  },
+  {
+    key: 'codex',
+    name: 'ChatGPT Codex',
+    desc: 'OpenAI · GPT-5',
+    icon: '◎',
+    color: '#3dd68c',
+    bg: 'rgba(61,214,140,0.12)',
+    endpoint: 'codex-auth-url',
+    callbackEndpoint: 'codex-auth-callback',
+    callbackPort: 1455,
+  },
+  {
+    key: 'antigravity',
+    name: 'Antigravity',
+    desc: 'Google account',
+    icon: '⟁',
+    color: '#a67af4',
+    bg: 'rgba(166,122,244,0.12)',
+    endpoint: 'antigravity-auth-url',
+    callbackEndpoint: 'antigravity-auth-callback',
+    callbackPort: 51121,
+  },
+];
+
+// ═══════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+  if (id === 'quota') loadQuota();
+  if (id === 'auth-files') loadAuthFiles();
+}
+
+// ═══════════════════════════════════════════════════════
+//  API HELPER
+// ═══════════════════════════════════════════════════════
+async function api(path, opts = {}) {
+  const url = state.host.replace(/\/$/, '') + '/v0/management/' + path;
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + state.key,
+    'X-Management-Key': state.key,
+    ...opts.headers,
+  };
+  const res = await fetch(url, { ...opts, headers });
+  if (!res.ok) {
+    const txt = await res.text().catch(() => res.statusText);
+    throw new Error(res.status + ': ' + txt);
+  }
+  const ct = res.headers.get('content-type') || '';
+  if (ct.includes('json')) return res.json();
+  return res.text();
+}
+
+// ═══════════════════════════════════════════════════════
+//  CONNECTION
+// ═══════════════════════════════════════════════════════
+async function connectBackend() {
+  state.host = document.getElementById('hostInput').value.trim() || 'http://localhost:8317';
+  state.key  = document.getElementById('keyInput').value.trim();
+  localStorage.setItem('fcu_host', state.host);
+  localStorage.setItem('fcu_key',  state.key);
+
+  const btn = document.getElementById('connectBtn');
+  btn.textContent = 'Connecting…'; btn.disabled = true;
+
+  try {
+    await api('info');
+    setConnected(true);
+    toast('Connected to ' + state.host, 'success');
+  } catch (e) {
+    toast('Connection failed: ' + e.message, 'error');
+    setConnected(false);
+  } finally {
+    btn.textContent = 'Connect'; btn.disabled = false;
+  }
+}
+
+function disconnectBackend() {
+  setConnected(false);
+  toast('Disconnected', 'info');
+}
+
+function setConnected(v) {
+  state.connected = v;
+  const chip = document.getElementById('globalStatus');
+  const txt  = document.getElementById('statusText');
+  const dbtn = document.getElementById('disconnectBtn');
+  const cbtn = document.getElementById('connectBtn');
+  if (v) {
+    chip.classList.add('connected');
+    txt.textContent = state.host.replace('http://','').replace('https://','');
+    dbtn.style.display = '';
+    cbtn.style.display = 'none';
+  } else {
+    chip.classList.remove('connected');
+    txt.textContent = 'disconnected';
+    dbtn.style.display = 'none';
+    cbtn.style.display = '';
+  }
+}
+
+function saveSettings() {
+  document.getElementById('hostInput').value = document.getElementById('s-host').value;
+  document.getElementById('keyInput').value  = document.getElementById('s-key').value;
+  connectBackend();
+  showPage('oauth');
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER PROVIDER CARDS
+// ═══════════════════════════════════════════════════════
+function renderProviders() {
+  const grid = document.getElementById('providerGrid');
+  const remoteMode = document.getElementById('toggle-remote').classList.contains('on');
+  grid.innerHTML = '';
+
+  PROVIDERS.forEach(p => {
+    const as = state.authStates[p.key] || {};
+    const authed = as.done;
+    const authing = as.url && !as.done;
+
+    const card = document.createElement('div');
+    card.className = 'provider-card' + (authed ? ' authed' : '') + (authing ? ' authing' : '');
+    card.style.setProperty('--provider-color', p.color);
+    card.id = 'card-' + p.key;
+
+    const statusLabel = authed ? 'authenticated' : authing ? 'pending…' : 'not connected';
+    const statusClass = authed ? 'ok' : authing ? 'pending' : '';
+
+    const authFlowHtml = `
+      <div class="auth-flow ${as.url ? 'open' : ''}" id="flow-${p.key}">
+        <div class="auth-url-label">Authorization URL</div>
+        <div class="auth-url-box" id="url-${p.key}" onclick="copyUrl('${p.key}')"
+             title="Click to copy">
+          ${as.url || ''}
+        </div>
+        <div class="auth-url-actions">
+          <button class="btn btn-ghost" style="font-size:11px;" onclick="copyUrl('${p.key}')">⎘ Copy Link</button>
+          <button class="btn btn-primary" style="font-size:11px;" onclick="openUrl('${p.key}')">↗ Open Link</button>
+        </div>
+        ${remoteMode ? `
+          <div class="auth-sep">remote browser mode</div>
+          <div class="callback-label">Callback URL</div>
+          <div class="callback-help">After the provider redirects to http://localhost:${p.callbackPort}…, copy the full URL and paste it here.</div>
+          <div class="callback-row">
+            <input class="callback-input" id="cb-${p.key}" placeholder="http://localhost:${p.callbackPort}/auth/callback?code=…&state=…"/>
+            <button class="btn btn-primary" style="font-size:11px;" onclick="submitCallback('${p.key}')">Submit</button>
+          </div>
+        ` : ''}
+        <div class="auth-status" id="auth-status-${p.key}">
+          ${as.url && !as.done ? `<div class="spinner"></div> Waiting for authentication…` : ''}
+          ${as.done ? '✓ Authenticated' : ''}
+          ${as.error ? '✗ ' + as.error : ''}
+        </div>
+      </div>
+    `;
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="provider-icon" style="background:${p.bg};color:${p.color};">${p.icon}</div>
+        <div>
+          <div class="provider-name">${p.name}</div>
+          <div class="provider-desc">${p.desc}</div>
+        </div>
+        <div class="card-status ${statusClass}" id="cs-${p.key}">
+          <div class="card-status-dot"></div>
+          <span id="cs-text-${p.key}">${statusLabel}</span>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-login" id="btn-${p.key}"
+                style="--provider-color:${p.color}"
+                onclick="startOAuth('${p.key}')">
+          ${authed ? '↻ Re-Login' : '⟶ Login'}
+        </button>
+        ${authed ? `<button class="btn-logout" onclick="clearAuth('${p.key}')" title="Clear auth">✕</button>` : ''}
+      </div>
+      ${authFlowHtml}
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  OAUTH FLOW
+// ═══════════════════════════════════════════════════════
+async function startOAuth(providerKey) {
+  if (!state.connected) {
+    toast('Connect to the backend first', 'error');
+    return;
+  }
+
+  const p = PROVIDERS.find(x => x.key === providerKey);
+  const btn = document.getElementById('btn-' + providerKey);
+  btn.classList.add('loading');
+  btn.textContent = '⏳ Getting URL…';
+
+  try {
+    // Call management API to start OAuth and get auth URL
+    const data = await api(p.endpoint, { method: 'POST', body: JSON.stringify({}) });
+
+    // The response may be { url: "..." } or { authorization_url: "..." }
+    const url = data.url || data.authorization_url || data.auth_url || data.link
+      || (typeof data === 'string' ? data : null);
+
+    if (!url) throw new Error('No auth URL in response: ' + JSON.stringify(data));
+
+    state.authStates[providerKey] = { url, done: false, polling: true };
+    renderProviders();
+
+    // Auto-open if setting is on
+    const autoOpen = document.getElementById('toggle-autoopen').classList.contains('on');
+    if (autoOpen) {
+      window.open(url, '_blank', 'noopener');
+      toast('Opened auth URL in new tab', 'info');
+    } else {
+      toast('Auth URL ready — copy or open the link', 'info');
+    }
+
+    // Start polling if setting is on
+    const shouldPoll = document.getElementById('toggle-poll').classList.contains('on');
+    if (shouldPoll) startPolling(providerKey);
+
+  } catch (e) {
+    toast('Failed to get auth URL: ' + e.message, 'error');
+    state.authStates[providerKey] = { error: e.message };
+    renderProviders();
+  }
+}
+
+function openUrl(providerKey) {
+  const url = state.authStates[providerKey]?.url;
+  if (url) window.open(url, '_blank', 'noopener');
+}
+
+function copyUrl(providerKey) {
+  const url = state.authStates[providerKey]?.url;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => {
+    toast('URL copied to clipboard', 'success');
+    const box = document.getElementById('url-' + providerKey);
+    if (box) { box.classList.add('copied'); setTimeout(() => box.classList.remove('copied'), 500); }
+  });
+}
+
+async function submitCallback(providerKey) {
+  const input = document.getElementById('cb-' + providerKey);
+  const cbUrl = input?.value?.trim();
+  if (!cbUrl) { toast('Paste the callback URL first', 'error'); return; }
+
+  const p = PROVIDERS.find(x => x.key === providerKey);
+  try {
+    await api(p.callbackEndpoint, {
+      method: 'POST',
+      body: JSON.stringify({ url: cbUrl, redirect_url: cbUrl }),
+    });
+    markDone(providerKey);
+  } catch (e) {
+    // Try alternate payload keys
+    try {
+      await api(p.callbackEndpoint, {
+        method: 'POST',
+        body: JSON.stringify({ callback_url: cbUrl }),
+      });
+      markDone(providerKey);
+    } catch (e2) {
+      toast('Callback submit failed: ' + e2.message, 'error');
+    }
+  }
+}
+
+function markDone(providerKey) {
+  if (state.authStates[providerKey]) {
+    state.authStates[providerKey].done = true;
+    state.authStates[providerKey].polling = false;
+  }
+  renderProviders();
+  toast('✓ ' + providerKey + ' authenticated!', 'success');
+  stopPolling(providerKey);
+}
+
+function clearAuth(providerKey) {
+  delete state.authStates[providerKey];
+  renderProviders();
+}
+
+// ═══════════════════════════════════════════════════════
+//  POLLING
+// ═══════════════════════════════════════════════════════
+const _pollingTimers = {};
+
+function startPolling(providerKey) {
+  stopPolling(providerKey);
+  _pollingTimers[providerKey] = setInterval(async () => {
+    const as = state.authStates[providerKey];
+    if (!as || as.done) { stopPolling(providerKey); return; }
+
+    // Try to detect completion by checking auth files list
+    try {
+      const files = await api('auth-files');
+      const list = files.files || files.auth_files || files || [];
+      const matched = Array.isArray(list) && list.some(f => {
+        const fn = (f.filename || f.name || f || '').toLowerCase();
+        return fn.includes(providerKey) || fn.includes(providerKey.replace('anthropic','claude'));
+      });
+
+      if (matched && !as.done) markDone(providerKey);
+    } catch { /* ignore */ }
+  }, 3000);
+}
+
+function stopPolling(providerKey) {
+  if (_pollingTimers[providerKey]) {
+    clearInterval(_pollingTimers[providerKey]);
+    delete _pollingTimers[providerKey];
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  QUOTA PAGE
+// ═══════════════════════════════════════════════════════
+async function loadQuota() {
+  if (!state.connected) return;
+  try {
+    const data = await api('quota');
+    renderQuota(data);
+  } catch (e) {
+    // Try usage endpoint
+    try {
+      const data = await api('usage?period=hour&limit=20');
+      renderUsage(data);
+    } catch { toast('Could not load quota: ' + e.message, 'error'); }
+  }
+}
+
+function renderQuota(data) {
+  const grid = document.getElementById('quotaGrid');
+  const entries = Object.entries(data || {});
+  if (!entries.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div>No quota data</div></div>'; return; }
+
+  grid.innerHTML = entries.map(([k, v]) => {
+    const used = v.used ?? v.requests ?? 0;
+    const total = v.total ?? v.limit ?? v.max ?? 0;
+    const pct = total ? Math.round(used / total * 100) : 0;
+    return `
+      <div class="quota-card">
+        <div class="quota-label">${k.toUpperCase()}</div>
+        <div class="quota-value">${used.toLocaleString()}</div>
+        <div class="quota-sub">of ${total.toLocaleString()} · ${pct}%</div>
+        <div class="quota-bar-wrap"><div class="quota-bar" style="width:${pct}%"></div></div>
+      </div>`;
+  }).join('');
+}
+
+function renderUsage(data) {
+  const rows = data.requests || data.entries || data || [];
+  const tbody = document.getElementById('usageTbody');
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px;">No recent requests</td></tr>'; return; }
+
+  tbody.innerHTML = rows.slice(0, 30).map(r => {
+    const ok = (r.status || r.status_code || 200) < 400;
+    return `<tr>
+      <td>${r.provider || r.auth || '—'}</td>
+      <td style="color:var(--text)">${r.model || '—'}</td>
+      <td>${(r.input_tokens||r.prompt_tokens||0).toLocaleString()} / ${(r.output_tokens||r.completion_tokens||0).toLocaleString()}</td>
+      <td><span class="tag ${ok?'green':'red'}">${ok?'ok':'err'}</span></td>
+      <td style="color:var(--text3)">${r.timestamp ? new Date(r.timestamp).toLocaleTimeString() : '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+//  AUTH FILES PAGE
+// ═══════════════════════════════════════════════════════
+async function loadAuthFiles() {
+  if (!state.connected) return;
+  const tbody = document.getElementById('authTbody');
+  try {
+    const data = await api('auth-files');
+    const files = data.files || data.auth_files || (Array.isArray(data) ? data : []);
+    if (!files.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px;">No auth files found</td></tr>';
+      return;
+    }
+    tbody.innerHTML = files.map(f => {
+      const name = f.filename || f.name || f;
+      const prov = guessProvider(name);
+      const exp  = f.expires_at ? new Date(f.expires_at).toLocaleString() : '—';
+      const valid = f.valid ?? f.active ?? true;
+      return `<tr>
+        <td style="color:var(--text);font-weight:500">${name}</td>
+        <td><span class="tag blue">${prov}</span></td>
+        <td style="color:var(--text3)">${exp}</td>
+        <td><span class="tag ${valid?'green':'red'}">${valid?'valid':'expired'}</span></td>
+        <td>
+          <button class="btn btn-sm" onclick="downloadAuthFile('${name}')">↓</button>
+          <button class="btn btn-sm" style="color:var(--red);margin-left:4px;" onclick="deleteAuthFile('${name}')">✕</button>
+        </td>
+      </tr>`;
+    }).join('');
+
+    // Also mark authed providers
+    files.forEach(f => {
+      const name = (f.filename || f.name || f).toLowerCase();
+      PROVIDERS.forEach(p => {
+        if (name.includes(p.key) || name.includes(p.key.replace('anthropic','claude'))) {
+          if (!state.authStates[p.key]?.done) {
+            state.authStates[p.key] = { done: true };
+          }
+        }
+      });
+    });
+    renderProviders();
+
+  } catch (e) {
+    toast('Failed to load auth files: ' + e.message, 'error');
+  }
+}
+
+function guessProvider(name) {
+  const n = name.toLowerCase();
+  if (n.includes('claude') || n.includes('anthropic')) return 'Claude';
+  if (n.includes('gemini') || n.includes('google')) return 'Gemini';
+  if (n.includes('codex') || n.includes('openai')) return 'Codex';
+  if (n.includes('antigravity')) return 'Antigravity';
+  return 'Unknown';
+}
+
+async function downloadAuthFile(name) {
+  try {
+    const data = await api('auth-file/' + encodeURIComponent(name));
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch (e) { toast('Download failed: ' + e.message, 'error'); }
+}
+
+async function deleteAuthFile(name) {
+  if (!confirm('Delete ' + name + '?')) return;
+  try {
+    await api('auth-file/' + encodeURIComponent(name), { method: 'DELETE' });
+    toast('Deleted ' + name, 'success');
+    loadAuthFiles();
+  } catch (e) { toast('Delete failed: ' + e.message, 'error'); }
+}
+
+// ═══════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════
+function toast(msg, type = 'info') {
+  const icons = { success: '✓', error: '✗', info: 'ℹ' };
+  const area = document.getElementById('toastArea');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<span style="flex-shrink:0">${icons[type]||''}</span> ${msg}`;
+  area.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+function init() {
+  // restore saved host/key
+  document.getElementById('hostInput').value = state.host;
+  document.getElementById('keyInput').value  = state.key;
+  document.getElementById('s-host').value = state.host;
+  document.getElementById('s-key').value  = state.key;
+
+  renderProviders();
+
+  // Auto-connect if key is saved
+  if (state.key) connectBackend();
+}
+
+init();
+</script>
+</body>
+</html>
